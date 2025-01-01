@@ -39,13 +39,11 @@
           $picture = get_picture_by_id($id);
           $tytul = $picture['tytul'];
           $autor = $picture['autor'];
-          $cat = $picture['cat'];
           $extension = pathinfo($picture['path'], PATHINFO_EXTENSION);
           $path = '../images/watermark/' . $id . '.' . $extension;
           echo '<img src="' . $path . '" alt="' . $tytul . '">';
           echo '<p> Tytuł: ' . $tytul . '</p>';
           echo '<p> Autor: ' . $autor . '</p>';
-          echo '<p> Kot: ' . $cat . '</p>';
         ?>
       </div>
     </div>
