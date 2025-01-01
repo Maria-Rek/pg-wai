@@ -3,38 +3,49 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Moja Galeria Szczurów</title>
+    <title>Galeria Szczurów</title>
     <link rel="stylesheet" type="text/css" href="../static/style/style.css" />
   </head>
 
   <body>
     <div class="layout">
-      <header id="top"><a href="/">Strona główna</a></header>
+      <header id="top">
+        <!-- LOGO WYGENEROWANE PRZEZ AI -->
+        <img src="./static/resource/logo.png" width="150" height="150">
+        <br/>
+        <a href="/">Strona główna</a>
+      </header>
 
       <nav>
         <ul>
           <li>
             <div class="dropdown">
-              <button class="dropbtn"><b>Szczury</b></button>
+              <button class="dropbtn"><b>Galeria</b></button>
               <div class="dropdown-content">
-                <a href="/cats">Wstęp</a>
-                <a href="/cats/yato">Yato</a>
-                <a href="/cats/ashe">Ashe</a>
-                <a href="/cats/akira">Akira</a>
-                <a href="/cats/galeria">Galeria szczurów</a>
+                <a href="/rats/yato">Yato</a>
+                <a href="/rats/ashe">Ashe</a>
+                <a href="/rats/akira">Akira</a>
+                <a href="/rats/galeria">Galeria szczurków</a>
               </div>
             </div>
           </li>
-	      <li>
-	        <a href="/upload"><b>Upload</b></a>
-	      </li>
+		      <li>
+			      <a href="/upload"><b>Upload</b></a>
+		      </li>
         </ul>
       </nav>
+
+      <footer>
+        <div id="footer">
+              <p>Maria Rek | Wytwarzanie aplikacji internetowych | 2024/2025</p> 
+        </div>
+      </footer>
 
       <main>
         <h5>Wysyłanie zdjęć</h5>
       </main>
-        <div class="content">
+
+      <div class="content">
         <form method="post" enctype="multipart/form-data">
           <input type="file" name="file" />
           <br />
@@ -42,9 +53,9 @@
           <br />
           <input type="text" name="tytul" placeholder="Tytuł" />
           <br />
-          <INPUT TYPE="Radio" Name="cat" Value="Yato">Yato
-          <INPUT TYPE="Radio" Name="cat" Value="Ashe">Ashe
-          <INPUT TYPE="Radio" Name="cat" Value="Akira">Akira
+          <INPUT TYPE="Radio" Name="rat" Value="Yato">Yato
+          <INPUT TYPE="Radio" Name="rat" Value="Ashe">Ashe
+          <INPUT TYPE="Radio" Name="rat" Value="Akira">Akira
           <br />
           <input type="text" name="watermark" placeholder="Znak wodny" />
           <input type="submit" value="Wyślij plik" />

@@ -21,10 +21,10 @@ function get_pictures()
     return $db->pictures->find()->toArray();
 }
 
-function get_pictures_by_cat($cat)
+function get_pictures_by_rat($rat)
 {
     $db = get_db();
-    $pictures = $db->pictures->find(['cat' => $cat]);
+    $pictures = $db->pictures->find(['rat' => $rat]);
     return $pictures;
 }
 
@@ -34,6 +34,7 @@ function get_picture_by_id($id)
     $picture = $db->pictures->findOne(['id' => $id]);
     return $picture;
 }
+
 
 function handle_image_upload(){
         //VALIDATION
@@ -60,7 +61,7 @@ function handle_image_upload(){
             $db = get_db();
             $picture_info = [
                 'id' => $id,
-                'cat' => $_POST['cat'],
+                'rat' => $_POST['rat'],
                 'tytul' => $_POST['tytul'],
                 'autor' => $_POST['autor'],
                 'path' => $targetFile,
@@ -74,8 +75,8 @@ function handle_image_upload(){
             }
             miniaturka($targetFile, $picture_info);
             watermark_picture($targetFile, $picture_info);
-            return 'redirect:/cats/galeria';
+            return 'redirect:/rats/galeria';
         }
-        return 'redirect:/cats/galeria';
+        return 'redirect:/rats/galeria';
 
 }
