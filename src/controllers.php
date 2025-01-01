@@ -2,8 +2,8 @@
 require_once("business.php");
 require_once("image-utils.php");
 
-function rats(&$model){
-    return '/rats';
+function cats(&$model){
+    return '/cats';
 }
 
 function upload(&$model){
@@ -17,25 +17,13 @@ function upload(&$model){
 }
 
 function galeria(&$model){
-    $rats = get_pictures();
-    $model['rats'] = $rats;
+    $cats = get_pictures();
+    $model['cats'] = $cats;
     return '/galeria';
 }
 
 function index(&$model){
     return '/index';
-}
-
-function yato(&$model){
-    return '/rats/yato';
-}
-
-function ashe(&$model){
-    return '/rats/ashe';
-}
-
-function akira(&$model){
-    return '/rats/akira';
 }
 
 function viewimage(&$model)
