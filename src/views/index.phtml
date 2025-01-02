@@ -16,12 +16,21 @@
       
       <div class="content">
         <p>
-        Witaj w galerii przesłodkich szczurków! 🐾
+        Witaj w galerii przesłodkich kotków! 🐾
         <br/>
         Prześlij zdjęcie słodkiego kotka lub oglądaj w galerii zdjęcia innych użytkowników.
         <br/>
         Miłego oglądania! 🤍
         </p>
+
+        <?php if (!empty($_SESSION['logged_in'])): ?>
+            <p><?= htmlspecialchars($_SESSION['user']) ?>, jesteś zalogowany.</p>
+            <a href="/index.php?action=logout">Wyloguj się</a>
+        <?php else: ?>
+            <a href="/index.php?action=login">Zaloguj się</a>
+            <a href="/index.php?action=register">Zarejestruj się</a>
+        <?php endif; ?>
+
       </div>
   </body>
 </html>

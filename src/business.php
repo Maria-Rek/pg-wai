@@ -1,5 +1,6 @@
 <?php
 use MongoDB\BSON\ObjectID;
+require '../../vendor/autoload.php';
 
 function get_db()
 {
@@ -71,4 +72,68 @@ function handle_image_upload(){
         }
         return 'redirect:/cats/galeria';
 
+}
+
+// function connectToDatabase() {
+//     $client = new MongoDB\Client("mongodb://wai_web:w@i_w3b@localhost:27017");
+//     return $client->wai;
+// }
+function connectToDatabase() {
+    try {
+        $mongo = new MongoDB\Client(
+            "mongodb://localhost:27017/wai",
+            [
+                'username' => 'wai_web',
+                'password' => 'w@i_w3b',
+            ]
+        );
+        // Test połączenia z bazą
+        $db = $mongo->selectDatabase('wai');
+        $db->listCollections();
+        return $db;
+    } catch (Exception $e) {
+        die("Błąd połączenia z MongoDB: " . $e->getMessage());
+    }
+}
+
+
+
+function userExists($username, $email) {
+    $db = connectToDatabase();
+    $collection = $db->users;
+    $user = $collection->findOne([
+        '$or' => [
+            ['username' => $username],
+            ['email' => $email]
+        ]
+    ]);
+    return $user;
+}
+
+function saveUser($username, $email, $hashed_password) {
+    $db = connectToDatabase();
+    $collection = $db->users;
+    $result = $collection->insertOne([
+        'username' => $username,
+        'email' => $email,
+        'password' => $hashed_password
+    ]);
+    return $result->isAcknowledged();
+}
+
+function verifyUser($identifier, $password) {
+    $db = connectToDatabase();
+    $collection = $db->users;
+    $user = $collection->findOne([
+        '$or' => [
+            ['username' => $identifier],
+            ['email' => $identifier]
+        ]
+    ]);
+
+    if ($user) {
+        return password_verify($password, $user['password']);
+    }
+
+    return false;
 }

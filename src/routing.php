@@ -8,4 +8,6 @@ $routing = [
     '/cats/galeria' => 'galeria',
     'galeria_redirect' => 'galeria_redirect',
     'viewimage' => 'viewimage',
+    '/register' => 'register',
+    '/login' => 'login', 
 ];
