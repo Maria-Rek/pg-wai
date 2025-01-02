@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (isset($_SESSION['user_id'])) {
+    header("Location: galeria.phtml");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="pl-PL">
   <head>
@@ -44,6 +51,8 @@
           <br/>
           <button type="submit">Zaloguj się</button>
         </form>
+        <br/>
+        <p>Nie masz konta? <br/><a href="/index.php?action=register">Zarejestruj się tutaj</a></p>
       </div>
     </div>
   </body>
