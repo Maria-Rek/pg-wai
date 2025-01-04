@@ -24,11 +24,18 @@ function build_response($view, $model){
     }
 }
 
-function render($view, $model){
+function render($view, $model) {
     global $routing;
     extract($model);
-    include("views" . $view . ".phtml");
+
+    // Dodaj `.phtml`, jeśli brak
+    if (substr($view, -6) !== '.phtml') {
+        $view .= '.phtml';
+    }
+
+    include("views/" . $view);
 }
+
 
 function is_ajax()
 {

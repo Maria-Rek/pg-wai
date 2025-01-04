@@ -38,27 +38,18 @@ function register(&$model)
         'username' => null,
         'email' => null,
         'password' => null,
-        'repeat_password' => null,
-        'error' => null
+        'error' => null  // Usunięto `repeat_password`
     ];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Pobieranie danych z formularza
-        $username = trim($_POST['nickname']);
+        $username = trim($_POST['username']);
         $email = trim($_POST['email']);
         $password = $_POST['password'];
-        $repeatPassword = $_POST['repeat_password'];
 
         // Walidacja wymaganych pól
-        if (empty($username) || empty($email) || empty($password) || empty($repeatPassword)) {
+        if (empty($username) || empty($email) || empty($password)) {
             $user['error'] = 'Wszystkie pola są wymagane.';
-            $model['user'] = $user;
-            return 'register.phtml';
-        }
-
-        // Sprawdzenie zgodności haseł
-        if ($password !== $repeatPassword) {
-            $user['error'] = 'Hasła nie pasują.';
             $model['user'] = $user;
             return 'register.phtml';
         }
