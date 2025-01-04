@@ -93,6 +93,7 @@ function login(&$model) {
             // Ustawienie danych w sesji
             $_SESSION['username'] = $identifier;
             $_SESSION['user'] = $identifier;
+            $_SESSION['success_message'] = 'Zalogowano pomyślnie!';
 
             header("Location: /index");
             exit();
