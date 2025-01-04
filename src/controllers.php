@@ -76,3 +76,49 @@ function register(&$model)
     $model['user'] = $user;
     return 'register.phtml';  // Widok formularza rejestracji
 }
+
+// function login(&$model) {
+//     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//         $identifier = $_POST['identifier'] ?? '';
+//         $password = $_POST['password'] ?? '';
+
+//         if (verifyUser($identifier, $password)) {
+//             if (session_status() === PHP_SESSION_NONE) {
+//                 session_start();  // Rozpocznij sesję
+//             }
+//             $_SESSION['username'] = $identifier;  // Nazwa użytkownika
+//             $_SESSION['user'] = $identifier;  
+
+//             header("Location: /index");
+//             exit();
+//         } else {
+//             $model['error'] = "Nieprawidłowe dane logowania.";
+//         }
+//     }
+//     require '../views/login.phtml';  // Formularz logowania
+// }
+
+function login(&$model) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $identifier = $_POST['identifier'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        // Sprawdzenie poprawności danych logowania
+        if (verifyUser($identifier, $password)) {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            session_regenerate_id(true);
+
+            // Ustawienie danych w sesji
+            $_SESSION['username'] = $identifier;
+            $_SESSION['user'] = $identifier;
+
+            header("Location: /index");
+            exit();
+        } else {
+            $model['error'] = "Nieprawidłowe dane logowania.";
+        }
+    }
+    return 'login';  // Zwrócenie widoku
+}
