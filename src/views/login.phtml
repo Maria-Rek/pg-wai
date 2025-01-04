@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+};
 if (isset($_SESSION['user_id'])) {
     header("Location: galeria.phtml");
     exit();
@@ -23,7 +25,7 @@ if (isset($_SESSION['user_id'])) {
       <nav>
         <ul>
           <li>
-              <a href="/cats/galeria"><b>Galeria kotów</b></a>
+              <a href="/galeria"><b>Galeria kotów</b></a>
           </li>
 		      <li>
 			      <a href="/upload"><b>Upload</b></a>
@@ -52,6 +54,11 @@ if (isset($_SESSION['user_id'])) {
           <button type="submit">Zaloguj się</button>
         </form>
         <br/>
+        <?php if (!empty($model['error'])): ?>
+          <div style="color: red; font-weight: bold; margin-bottom: 10px;">
+        <?= htmlspecialchars($model['error']) ?>
+          </div>
+        <?php endif; ?>
         <p>Nie masz konta? <br/><a href="/index.php?action=register">Zarejestruj się tutaj</a></p>
       </div>
     </div>

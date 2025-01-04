@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 ?>
 <!DOCTYPE html>
 <html lang="pl-PL">
@@ -25,15 +27,14 @@ session_start();
         <br/>
         Miłego oglądania! 🤍
         </p>
-
-        <?php if (!empty($_SESSION['logged_in'])): ?>
-            <p><?= htmlspecialchars($_SESSION['user']) ?>, jesteś zalogowany.</p>
-            <a href="/index.php?action=logout">Wyloguj się</a>
+        <br/>
+        <?php if (!empty($_SESSION['user'])): ?>
+          <p>Witaj, <?= htmlspecialchars($_SESSION['user']); ?>!</p>
+          <a href="/index.php?action=logout">Wyloguj się</a>
         <?php else: ?>
-            <a href="/index.php?action=login">Zaloguj się</a>
-            <a href="/index.php?action=register">Zarejestruj się</a>
-        <?php endif; ?>
-
+          <a href="/index.php?action=login">Zaloguj się</a>
+          <a href="/index.php?action=register">Zarejestruj się</a>
+      <?php endif; ?>
       </div>
   </body>
 </html>
