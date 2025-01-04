@@ -50,7 +50,7 @@ if (session_status() === PHP_SESSION_NONE) {
       <div class="content">
         <?php
           $items_per_page = 2;
-          $pictures = $cats;
+          $pictures = $model['cats'] ?? []; // Pobieranie obrazów z modelu
           $totalItems = count($pictures);
           $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
           $urlPattern = '/cats/galeria?page=(:num)';

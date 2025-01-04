@@ -18,14 +18,19 @@ function upload(&$model){
     }
 }
 
-function galeria(&$model){
-    $cats = get_pictures();
-    $model['cats'] = $cats;
+
+function galeria(&$model) {
+    $cats = get_pictures();  // Pobranie obrazów z bazy danych
+    $model['cats'] = $cats;  // Przypisanie danych do modelu
     return '/galeria';
 }
 
-function index() {
-    require '../views/index.phtml';
+
+// function index() {
+//     require '../views/index.phtml';
+// }
+function index(&$model){
+    return '/index';
 }
 
 

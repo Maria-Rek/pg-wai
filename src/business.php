@@ -1,6 +1,6 @@
 <?php
 use MongoDB\BSON\ObjectID;
-require '../../vendor/autoload.php';
+require dirname(__DIR__, 1) . '/vendor/autoload.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
   }
