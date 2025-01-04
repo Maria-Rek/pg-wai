@@ -1,6 +1,11 @@
 <?php
 use MongoDB\BSON\ObjectID;
 require '../../vendor/autoload.php';
+require '../controllers.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+logout();
 
 function get_db()
 {
@@ -79,22 +84,14 @@ function handle_image_upload(){
 //     return $client->wai;
 // }
 function connectToDatabase() {
-    try {
-        $mongo = new MongoDB\Client(
-            "mongodb://localhost:27017/wai",
-            [
-                'username' => 'wai_web',
-                'password' => 'w@i_w3b',
-            ]
-        );
-        // Test połączenia z bazą
-        $db = $mongo->selectDatabase('wai');
-        $db->listCollections();
-        return $db;
-    } catch (Exception $e) {
-        die("Błąd połączenia z MongoDB: " . $e->getMessage());
-    }
-}
+    $client = new MongoDB\Client(
+        "mongodb://localhost:27017/wai",
+        [
+            'username' => 'wai_web',
+            'password' => 'w@i_w3b',
+        ]);
+    return $client->wai;
+}  
 
 
 
@@ -136,4 +133,170 @@ function verifyUser($identifier, $password) {
     }
 
     return false;
+}
+
+// function getUserDataFromSession() {
+//     if (isset($_SESSION['user_id'])) {
+//         return [
+//             'id' => $_SESSION['user_id'],
+//             'username' => $_SESSION['username']
+//         ];
+//     }
+//     return null; // Brak sesji użytkownika
+// }
+
+// // Funkcja rejestracji użytkownika
+// function registerUser($username, $email, $password) {
+//     global $db;
+//     $collection = $db->users;
+
+//     // Sprawdzenie, czy użytkownik już istnieje
+//     $existingUser = $collection->findOne(['username' => $username]);
+//     if ($existingUser) {
+//         throw new Exception("Nazwa użytkownika jest już zajęta.");
+//     }
+
+//     // Hashowanie hasła
+//     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+//     // Dodanie użytkownika do bazy
+//     $result = $collection->insertOne([
+//         'username' => $username,
+//         'email' => $email,
+//         'password_hash' => $passwordHash
+//     ]);
+
+//     return $result->getInsertedId();
+// }
+
+// // Funkcja logowania użytkownika
+// function loginUser($username, $password) {
+//     global $db;
+//     $collection = $db->users;
+
+//     // Pobieranie użytkownika
+//     $user = $collection->findOne(['username' => $username]);
+//     if (!$user) {
+//         throw new Exception("Nie znaleziono użytkownika.");
+//     }
+
+//     // Weryfikacja hasła
+//     if (!password_verify($password, $user['password_hash'])) {
+//         throw new Exception("Nieprawidłowe hasło.");
+//     }
+
+//     // Tworzenie sesji
+//     session_regenerate_id(true);
+//     $_SESSION['user_id'] = (string)$user['_id'];
+//     $_SESSION['username'] = $user['username'];
+
+//     return true;
+// }
+
+// function checkUserSession() {
+//     if (session_status() === PHP_SESSION_NONE) {
+//         session_start();  // Rozpocznij sesję, jeśli jej nie ma
+//     }
+
+//     // Sprawdzenie, czy użytkownik jest zalogowany:
+//     if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
+//         header("Location: /index");  // Jeśli nie ma sesji, przekieruj na stronę główną
+//         exit();
+//     }
+
+//     // Zwracamy dane użytkownika, jeśli wszystko jest OK:
+//     return [
+//         'id' => $_SESSION['user_id'],
+//         'username' => $_SESSION['username']
+//     ];
+// }
+
+function getUserDataFromSession() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();  // Rozpocznij sesję, jeśli jej nie ma
+    }
+    if (isset($_SESSION['user_id'])) {
+        return [
+            'id' => $_SESSION['user_id'],
+            'username' => $_SESSION['username']
+        ];
+    }
+    return null; // Brak sesji użytkownika
+}
+function registerUser($username, $email, $password) {
+    global $db;
+    $collection = $db->users;
+
+    // Walidacja danych
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new Exception("Nieprawidłowy adres e-mail.");
+    }
+    if (strlen($username) < 3) {
+        throw new Exception("Nazwa użytkownika musi mieć co najmniej 3 znaki.");
+    }
+
+    // Sprawdzenie, czy użytkownik już istnieje
+    $existingUser = $collection->findOne(['username' => $username]);
+    if ($existingUser) {
+        throw new Exception("Nazwa użytkownika jest już zajęta.");
+    }
+
+    // Hashowanie hasła
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+    // Dodanie użytkownika do bazy
+    $result = $collection->insertOne([
+        'username' => $username,
+        'email' => $email,
+        'password_hash' => $passwordHash
+    ]);
+
+    return $result->getInsertedId();
+}
+function loginUser($username, $password) {
+    global $db;
+    $collection = $db->users;
+
+    // Walidacja danych
+    if (empty($username) || empty($password)) {
+        throw new Exception("Wszystkie pola muszą być wypełnione.");
+    }
+
+    // Pobieranie użytkownika
+    $user = $collection->findOne(['username' => $username]);
+    if (!$user) {
+        throw new Exception("Nie znaleziono użytkownika.");
+    }
+
+    // Weryfikacja hasła
+    if (!password_verify($password, $user['password_hash'])) {
+        throw new Exception("Nieprawidłowe hasło.");
+    }
+
+    // Tworzenie sesji
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = (string)$user['_id'];
+    $_SESSION['username'] = $user['username'];
+
+    return true;
+}
+function checkUserSession() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();  // Rozpocznij sesję, jeśli jej nie ma
+    }
+
+    // Sprawdzenie, czy użytkownik jest zalogowany
+    if (empty($_SESSION['user_id']) || empty($_SESSION['username'])) {
+        header("Location: /index");  // Jeśli brak danych sesji, przekierowanie na stronę główną
+        exit();
+    }
+
+    // Zwracamy dane użytkownika, jeśli wszystko jest OK
+    return [
+        'id' => $_SESSION['user_id'],
+        'username' => $_SESSION['username']
+    ];
 }
