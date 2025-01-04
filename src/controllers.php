@@ -2,28 +2,62 @@
 require_once("business.php");
 require_once("image-utils.php");
 
-function cats(&$model){
-    return '/cats';
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-function upload(&$model){
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])){
+
+function upload(&$model) {
+    checkUserSession();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         $result = handle_image_upload();
-        return $result;
-    }
-    else{
+        $model['upload_result'] = $result;
+        return '/upload';
+    } else {
         return '/upload';
     }
 }
 
-function galeria(&$model){
-    $cats = get_pictures();
-    $model['cats'] = $cats;
-    return '/galeria';
+function galeria(&$model) {
+    checkUserSession();  // Sprawdzenie sesji
+    global $db;
+    $collection = $db->pictures;  // Powinno być "pictures", a nie "images"
+
+    $images = $collection->find();  // Pobiera wszystkie zdjęcia
+    $model['images'] = iterator_to_array($images);
+
+    return '/galeria';  // Ścieżka do widoku galerii
 }
 
-function index() {
-    require '../views/index.phtml';
+
+
+
+function index(&$model) {
+    try {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (isset($_SESSION['user'])) {
+            $model['user'] = $_SESSION['user']; // Przekazujemy dane użytkownika do widoku
+        } else {
+            $model['user'] = null; // Brak zalogowanego użytkownika
+        }
+
+        $view_path = '../views/index.phtml';
+        if (!file_exists($view_path)) {
+            throw new Exception("Brak pliku widoku: index.phtml");
+        }
+
+        require $view_path; // Wyświetlamy stronę główną
+    } catch (Exception $e) {
+        error_log("Błąd w funkcji index: " . $e->getMessage());
+        echo "Wystąpił błąd podczas ładowania strony.";
+    }
 }
 
 
@@ -77,19 +111,38 @@ function register() {
     }
 }
 
-function login() {
+function login(&$model) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $identifier = $_POST['identifier'] ?? '';
         $password = $_POST['password'] ?? '';
 
         if (verifyUser($identifier, $password)) {
-            session_start();
-            $_SESSION['user'] = $identifier;
-            echo "Zalogowano pomyślnie!";
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();  // Rozpocznij sesję
+            }
+            $_SESSION['user_id'] = '1';  // Tymczasowe ID (dla testu)
+            $_SESSION['username'] = $identifier;  // Nazwa użytkownika
+
+            header("Location: /upload");
+            exit();
         } else {
-            echo "Nieprawidłowe dane logowania.";
+            $model['error'] = "Nieprawidłowe dane logowania.";
         }
-    } else {
-        require '../views/login.phtml';
     }
+    require '../views/login.phtml';  // Formularz logowania
 }
+
+
+
+function logout() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    session_unset(); // Czyści dane sesji
+    session_destroy(); // Niszczy sesję
+    setcookie(session_name(), '', time() - 3600, '/'); // Usuwa ciasteczko sesji
+    header("Location: /index"); // Przekierowanie na stronę główną
+    exit();
+}
+
+
