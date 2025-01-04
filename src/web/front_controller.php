@@ -8,11 +8,6 @@ require_once '../dispatcher.php';
 require_once '../routing.php';
 require_once '../controllers.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-
 // CZYSZCZENIE BAZY
 function clear_db() {
     $db = get_db();

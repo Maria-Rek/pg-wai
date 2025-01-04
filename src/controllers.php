@@ -2,9 +2,10 @@
 require_once("business.php");
 require_once("image-utils.php");
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+function cats(&$model){
+    return '/cats';
 }
+
 function upload(&$model){
     if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])){
         $result = handle_image_upload();
@@ -76,73 +77,19 @@ function register() {
     }
 }
 
-
-// function login(&$model) {
-//         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//             $identifier = $_POST['identifier'] ?? '';
-//             $password = $_POST['password'] ?? '';
-    
-//             if (verifyUser($identifier, $password)) {
-//                 if (session_status() === PHP_SESSION_NONE) {
-//                     session_start();  // Rozpocznij sesję
-//                 }
-//                 $_SESSION['user_id'] = '1';  // Tymczasowe ID (dla testu)
-//                 $_SESSION['username'] = $identifier;  // Nazwa użytkownika
-    
-//                 header("Location: /upload");
-//                 exit();
-            
-//             } else {
-//                 $model['error'] = "Nieprawidłowe dane logowania.";
-//             }
-//         require '../views/login.phtml';  // Formularz logowania
-//     }
-// }
-    
-    
-    
-//     function logout() {
-//         if (session_status() === PHP_SESSION_NONE) {
-//             session_start();
-//         }
-//         session_unset(); // Czyści dane sesji
-//         session_destroy(); // Niszczy sesję
-//         setcookie(session_name(), '', time() - 3600, '/'); // Usuwa ciasteczko sesji
-//         header("Location: /index"); // Przekierowanie na stronę główną
-//         exit();
-//     }
-
-function login(&$model) {
+function login() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $identifier = trim(filter_input(INPUT_POST, 'identifier', FILTER_SANITIZE_STRING));
-        $password = trim($_POST['password']);
+        $identifier = $_POST['identifier'] ?? '';
+        $password = $_POST['password'] ?? '';
 
-        try {
-            if (verifyUser($identifier, $password)) {
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
-                }
-                $_SESSION['user_id'] = uniqid();  // Prawdziwy identyfikator użytkownika
-                $_SESSION['username'] = $identifier;
-
-                header("Location: /upload");
-                exit();
-            } else {
-                $model['error'] = "Nieprawidłowe dane logowania.";
-            }
-        } catch (Exception $e) {
-            $model['error'] = "Błąd serwera: " . $e->getMessage();
+        if (verifyUser($identifier, $password)) {
+            session_start();
+            $_SESSION['user'] = $identifier;
+            echo "Zalogowano pomyślnie!";
+        } else {
+            echo "Nieprawidłowe dane logowania.";
         }
+    } else {
+        require '../views/login.phtml';
     }
-    require '../views/login.phtml';  // Formularz logowania
-}
-function logout() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-    session_unset(); // Czyści dane sesji
-    session_destroy(); // Niszczy sesję
-    setcookie(session_name(), '', time() - 3600, '/', '', true, true);  // Usuwa ciasteczko sesji z zabezpieczeniami
-    header("Location: /index"); // Przekierowanie na stronę główną
-    exit();
 }
