@@ -1,7 +1,9 @@
 <?php
 use MongoDB\BSON\ObjectID;
 require '../../vendor/autoload.php';
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
 function get_db()
 {
     $mongo = new MongoDB\Client(

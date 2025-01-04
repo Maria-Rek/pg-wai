@@ -1,7 +1,9 @@
 <?php
 require_once("business.php");
 require_once("image-utils.php");
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
 function cats(&$model){
     return '/cats';
 }
