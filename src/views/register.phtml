@@ -1,7 +1,5 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-  session_start();
-}
+session_start();
 if (isset($_SESSION['user_id'])) {
     header("Location: galeria.phtml");
     exit();
@@ -25,7 +23,7 @@ if (isset($_SESSION['user_id'])) {
       <nav>
         <ul>
           <li>
-              <a href="/galeria"><b>Galeria kotów</b></a>
+              <a href="/cats/galeria"><b>Galeria kotów</b></a>
           </li>
 		      <li>
 			      <a href="/upload"><b>Upload</b></a>

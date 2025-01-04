@@ -6,17 +6,19 @@
       <nav>
         <ul>
           <li>
-              <a href="/galeria"><b>Galeria kotów</b></a>
+              <a href="/cats/galeria"><b>Galeria kotów</b></a>
           </li>
 		      <li>
 			      <a href="/upload"><b>Upload</b></a>
 		      </li>
           <li>
             <?php if (isset($_SESSION['user_id'])): ?>
-              <a href="/index.php?action=logout" style="color: blue; text-decoration: underline; cursor: pointer;">
-                Wyloguj się
-              </a>
-             <?php endif; ?>
+                <form method="post" style="display:inline;">
+                    <button type="submit" name="logout" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">
+                        Wyloguj się
+                    </button>
+                </form>
+            <?php endif; ?>
           </li>
         </ul>
       </nav>

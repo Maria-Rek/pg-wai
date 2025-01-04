@@ -1,18 +1,12 @@
 <?php
 // require '../../vendor/autoload.php';
-// require dirname(__DIR__, 2) . '/vendor/autoload.php';
-require __DIR__ . '/../../vendor/autoload.php';
-
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 
 require_once '../business.php';
 require_once '../dispatcher.php';
 require_once '../routing.php';
 require_once '../controllers.php';
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
 // CZYSZCZENIE BAZY
 function clear_db() {
