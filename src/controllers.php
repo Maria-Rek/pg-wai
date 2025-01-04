@@ -39,44 +39,49 @@ function register(&$model)
         'email' => null,
         'password' => null,
         'repeat_password' => null,
-        'error' => null  // Zmienione z `errors[]` na jeden komunikat `error`
+        'error' => null
     ];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (!empty($_POST['nickname']) && !empty($_POST['password']) && !empty($_POST['repeat_password']) && !empty($_POST['email'])) {
-            $hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
-            $user = [
-                'username' => $_POST['nickname'],
-                'email' => $_POST['email'],
-                'password' => $hash
-            ];
+        // Pobieranie danych z formularza
+        $username = trim($_POST['nickname']);
+        $email = trim($_POST['email']);
+        $password = $_POST['password'];
+        $repeatPassword = $_POST['repeat_password'];
 
-            // Sprawdzenie zgodności haseł
-            if ($_POST['password'] !== $_POST['repeat_password']) {
-                $user['error'] = 'Hasła nie pasują.';
-                $model['user'] = $user;
-                return 'register.phtml';
-            }
-
-            // Sprawdzenie, czy login jest zajęty
-            if (check_user_nickname($user)) {
-                $user['error'] = 'Login jest już zajęty.';
-                $model['user'] = $user;
-                return 'register.phtml';
-            }
-
-            // Zapis użytkownika do bazy
-            if (save_user(null, $user)) {
-                header("Location: /index");  // Przekierowanie po sukcesie
-                exit();
-            } else {
-                $user['error'] = 'Błąd zapisu do bazy danych.';
-            }
-        } else {
+        // Walidacja wymaganych pól
+        if (empty($username) || empty($email) || empty($password) || empty($repeatPassword)) {
             $user['error'] = 'Wszystkie pola są wymagane.';
+            $model['user'] = $user;
+            return 'register.phtml';
+        }
+
+        // Sprawdzenie zgodności haseł
+        if ($password !== $repeatPassword) {
+            $user['error'] = 'Hasła nie pasują.';
+            $model['user'] = $user;
+            return 'register.phtml';
+        }
+
+        // Sprawdzenie, czy użytkownik już istnieje
+        if (userExists($username, $email)) {
+            $user['error'] = 'Użytkownik o podanym loginie lub e-mailu już istnieje.';
+            $model['user'] = $user;
+            return 'register.phtml';
+        }
+
+        // Hashowanie hasła
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // Zapisanie użytkownika w bazie
+        if (saveUser($username, $email, $hashedPassword)) {
+            header("Location: /index");  // Przekierowanie po sukcesie
+            exit();
+        } else {
+            $user['error'] = 'Wystąpił błąd podczas rejestracji. Spróbuj ponownie.';
         }
     }
 
     $model['user'] = $user;
-    return 'register.phtml';  // Zwracamy widok rejestracji
+    return 'register.phtml';  // Widok formularza rejestracji
 }
