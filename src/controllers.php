@@ -77,26 +77,6 @@ function register(&$model)
     return 'register.phtml';  // Widok formularza rejestracji
 }
 
-// function login(&$model) {
-//     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//         $identifier = $_POST['identifier'] ?? '';
-//         $password = $_POST['password'] ?? '';
-
-//         if (verifyUser($identifier, $password)) {
-//             if (session_status() === PHP_SESSION_NONE) {
-//                 session_start();  // Rozpocznij sesję
-//             }
-//             $_SESSION['username'] = $identifier;  // Nazwa użytkownika
-//             $_SESSION['user'] = $identifier;  
-
-//             header("Location: /index");
-//             exit();
-//         } else {
-//             $model['error'] = "Nieprawidłowe dane logowania.";
-//         }
-//     }
-//     require '../views/login.phtml';  // Formularz logowania
-// }
 
 function login(&$model) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -121,4 +101,17 @@ function login(&$model) {
         }
     }
     return 'login';  // Zwrócenie widoku
+}
+
+function logout() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    unset($_SESSION['user']);
+    session_unset(); // Czyści dane sesji
+    session_destroy(); // Niszczy sesję
+    setcookie(session_name(), '', time() - 3600, '/'); // Usuwa ciasteczko sesji
+    header("Location: /index"); // Przekierowanie na stronę główną
+    exit();
 }

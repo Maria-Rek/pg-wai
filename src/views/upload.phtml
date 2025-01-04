@@ -21,6 +21,15 @@
 		      <li>
 			      <a href="/upload"><b>Upload</b></a>
 		      </li>
+          <li>
+            <?php if (!empty($_SESSION['user'])): ?>
+            <p><b>Użytkownik: <?= htmlspecialchars($_SESSION['user']); ?></b></p>
+            <a href="/logout">Wyloguj się</a>
+            <?php else: ?>
+              <a href="/login">Zaloguj się</a>
+              <a href="/register">Zarejestruj się</a>
+            <?php endif; ?>
+          </li>
         </ul>
       </nav>
 

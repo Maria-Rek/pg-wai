@@ -53,7 +53,12 @@ if (session_status() === PHP_SESSION_NONE) {
           <button type="submit">Zarejestruj się</button>
         </form>
         <br/>
-        <p>Masz już konto? <br/><a href="/index.php?action=login">Zaloguj się tutaj</a></p>
+        <?php if (!empty($model['user']['error'])): ?>
+          <div style="color: red; font-weight: bold; margin-bottom: 10px;">
+              <?= htmlspecialchars($model['user']['error']) ?>
+          </div>
+        <?php endif; ?>
+        <p>Masz już konto? <br/><a href="/login">Zaloguj się tutaj</a></p>
       </div>
     </div>
   </body>
