@@ -1,14 +1,11 @@
 <?php
 use MongoDB\BSON\ObjectID;
 require '../../vendor/autoload.php';
-<<<<<<< HEAD
 require '../controllers.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 logout();
-=======
->>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
 
 function get_db()
 {
@@ -87,7 +84,6 @@ function handle_image_upload(){
 //     return $client->wai;
 // }
 function connectToDatabase() {
-<<<<<<< HEAD
     $client = new MongoDB\Client(
         "mongodb://localhost:27017/wai",
         [
@@ -96,24 +92,6 @@ function connectToDatabase() {
         ]);
     return $client->wai;
 }  
-=======
-    try {
-        $mongo = new MongoDB\Client(
-            "mongodb://localhost:27017/wai",
-            [
-                'username' => 'wai_web',
-                'password' => 'w@i_w3b',
-            ]
-        );
-        // Test połączenia z bazą
-        $db = $mongo->selectDatabase('wai');
-        $db->listCollections();
-        return $db;
-    } catch (Exception $e) {
-        die("Błąd połączenia z MongoDB: " . $e->getMessage());
-    }
-}
->>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
 
 
 
@@ -156,7 +134,6 @@ function verifyUser($identifier, $password) {
 
     return false;
 }
-<<<<<<< HEAD
 
 // function getUserDataFromSession() {
 //     if (isset($_SESSION['user_id'])) {
@@ -323,5 +300,3 @@ function checkUserSession() {
         'username' => $_SESSION['username']
     ];
 }
-=======
->>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)

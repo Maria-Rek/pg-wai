@@ -8,14 +8,11 @@ require_once '../dispatcher.php';
 require_once '../routing.php';
 require_once '../controllers.php';
 
-<<<<<<< HEAD
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 
-=======
->>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
 // CZYSZCZENIE BAZY
 function clear_db() {
     $db = get_db();

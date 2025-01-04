@@ -2,16 +2,9 @@
 require_once("business.php");
 require_once("image-utils.php");
 
-<<<<<<< HEAD
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-=======
-function cats(&$model){
-    return '/cats';
-}
-
->>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
 function upload(&$model){
     if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])){
         $result = handle_image_upload();
@@ -83,7 +76,6 @@ function register() {
     }
 }
 
-<<<<<<< HEAD
 
 // function login(&$model) {
 //         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -121,14 +113,10 @@ function register() {
 //     }
 
 function login(&$model) {
-=======
-function login() {
->>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $identifier = trim(filter_input(INPUT_POST, 'identifier', FILTER_SANITIZE_STRING));
         $password = trim($_POST['password']);
 
-<<<<<<< HEAD
         try {
             if (verifyUser($identifier, $password)) {
                 if (session_status() === PHP_SESSION_NONE) {
@@ -144,20 +132,10 @@ function login() {
             }
         } catch (Exception $e) {
             $model['error'] = "Błąd serwera: " . $e->getMessage();
-=======
-        if (verifyUser($identifier, $password)) {
-            session_start();
-            $_SESSION['user'] = $identifier;
-            echo "Zalogowano pomyślnie!";
-        } else {
-            echo "Nieprawidłowe dane logowania.";
->>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
         }
-    } else {
-        require '../views/login.phtml';
     }
+    require '../views/login.phtml';  // Formularz logowania
 }
-<<<<<<< HEAD
 function logout() {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -168,5 +146,3 @@ function logout() {
     header("Location: /index"); // Przekierowanie na stronę główną
     exit();
 }
-=======
->>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
