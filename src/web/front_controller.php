@@ -19,6 +19,7 @@ function clear_db() {
 
 // clear_db();
 $action = isset($_GET['action']) ? '/' . ltrim($_GET['action'], '/') : '/';
+$action = preg_replace('/\.phtml$/', '', $action);
 
 // Obsługa metod POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

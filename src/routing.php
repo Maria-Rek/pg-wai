@@ -10,4 +10,5 @@ $routing = [
     'viewimage' => 'viewimage',
     '/register' => 'register',
     '/login' => 'login', 
+    '/logout' => 'logout'
 ];
