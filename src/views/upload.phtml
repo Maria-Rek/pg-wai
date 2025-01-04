@@ -1,7 +1,11 @@
 <?php
+<<<<<<< HEAD
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
+=======
+session_start();
+>>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
 
 if (isset($_POST['logout'])) {
     session_unset();
@@ -40,11 +44,23 @@ if (!isset($_SESSION['user_id'])) {
 		      <li>
 			      <a href="/upload"><b>Upload</b></a>
 		      </li>
+<<<<<<< HEAD
           <?php if (isset($_SESSION['user_id'])): ?>
               <a href="/index.php?action=logout" style="color: blue; text-decoration: underline; cursor: pointer;">
                 Wyloguj się
               </a>
              <?php endif; ?>
+=======
+          <li>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <form method="post" style="display:inline;">
+                    <button type="submit" name="logout" style="background:none; border:none; color:blue; text-decoration:underline; cursor:pointer;">
+                        Wyloguj się
+                    </button>
+                </form>
+            <?php endif; ?>
+          </li>
+>>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
         </ul>
       </nav>
 

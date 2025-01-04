@@ -1,8 +1,12 @@
 <?php
+<<<<<<< HEAD
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 };
 
+=======
+session_start();
+>>>>>>> parent of f888c1e (POPSUTA GALERIA I UPLOAD)
 if (isset($_SESSION['user_id'])) {
     header("Location: galeria.phtml");
     exit();
