@@ -6,9 +6,13 @@ require_once '../controllers.php';
 
 session_start();
 
-function clear_db(){
-    $db = get_db();
-    $db->pictures->drop();
+function clear_db() {
+    try {
+        $db = get_db();
+        $db->pictures->drop();
+    } catch (Exception $e) {
+        echo "Błąd podczas czyszczenia bazy danych: " . $e->getMessage();
+    }
 }
 //clear_db();
 

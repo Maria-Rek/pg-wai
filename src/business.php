@@ -1,5 +1,4 @@
 <?php
-use MongoDB\BSON\ObjectID;
 use MongoDB\Client;
 
 function get_db()
@@ -16,7 +15,7 @@ function get_db()
         $db = $mongo->wai;
         return $db;
     } catch (Exception $e) {
-        die("Błąd połączenia z bazą danych. Spróbuj ponownie później.");
+        die("Błąd połączenia z bazą danych.");
     }
 }
 
@@ -42,47 +41,48 @@ function get_picture_by_id($id)
     }
 }
 
+function handle_image_upload() {
+    if (empty($_POST['tytul']) || empty($_POST['autor']) || empty($_POST['watermark'])) {
+        return 'redirect:/upload?error=4'; // BRAK OBOWIĄZKOWEGO POLA
+    }
 
-function handle_image_upload(){
-        //WALIDACJA
-        if($_FILES['file']['size'] > 1024 * 1024){
-            return 'redirect:/upload?error=2'; //PLIK ZA DUŻY
-        }
+    if ($_FILES['file']['size'] > 1024 * 1024) {
+        return 'redirect:/upload?error=2'; // PLIK ZA DUŻY
+    }
 
-        //UPLOAD
-        $targetDirectory = "./images/";
-        $id = uniqid();
-        if($_FILES['file']['type'] === 'image/png'){
-            $targetFile = $targetDirectory . $id . '.png';
-        }
-        else if($_FILES['file']['type'] === 'image/jpeg'){
-            $targetFile = $targetDirectory . $id . '.jpg';
-        }
-        else{
-            return 'redirect:/upload?error=1'; //ZŁY FORMAT PLIKU
+    $targetDirectory = "./images/";
+    if (!is_dir($targetDirectory) || !is_writable($targetDirectory)) {
+        return 'redirect:/upload?error=5'; // ATALOG NIE ISTNIEJE LUB NIE MA UPRAWNIEŃ
+    }
 
-        }
+    $id = uniqid();
+    if ($_FILES['file']['type'] === 'image/png') {
+        $targetFile = $targetDirectory . $id . '.png';
+    } else if ($_FILES['file']['type'] === 'image/jpeg') {
+        $targetFile = $targetDirectory . $id . '.jpg';
+    } else {
+        return 'redirect:/upload?error=1'; // ZŁY FORMAT PLIKU
+    }
 
-        //ZAPISANIE DO BAZY
-        if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)){
-            $db = get_db();
-            $picture_info = [
-                'id' => $id,
-                'tytul' => $_POST['tytul'],
-                'autor' => $_POST['autor'],
-                'path' => $targetFile,
-                'watermark' => $_POST['watermark'],
-            ];
-            try {
-                $db->pictures->insertOne($picture_info);
-            } catch (Exception $e) {
-                return 'redirect:/upload?error=3'; //BŁĄD ZAPISU DO BAZY
-            }
-            miniaturka($targetFile, $picture_info);
-            watermark_picture($targetFile, $picture_info);
-            return 'redirect:/cats/galeria';
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+        $db = get_db();
+        $picture_info = [
+            'id' => $id,
+            'tytul' => $_POST['tytul'],
+            'autor' => $_POST['autor'],
+            'path' => $targetFile,
+            'watermark' => $_POST['watermark'],
+        ];
+        try {
+            $db->pictures->insertOne($picture_info);
+        } catch (Exception $e) {
+            return 'redirect:/upload?error=3'; // BŁĄD ZAPISU DO BAZY
         }
+        miniaturka($targetFile, $picture_info);
+        watermark_picture($targetFile, $picture_info);
         return 'redirect:/cats/galeria';
+    }
+    return 'redirect:/cats/galeria';
 }
 
 function userExists($username, $email) {
@@ -115,7 +115,6 @@ function saveUser($username, $email, $hashed_password) {
         return false;
     }
 }
-
 
 function verifyUser($identifier, $password) {
     $db = get_db();
