@@ -28,17 +28,10 @@ function render($view, $model) {
     global $routing;
     extract($model);
 
-    // Dodaj `.phtml`, jeśli brak
+    //DODAJ `.phtml`
     if (substr($view, -6) !== '.phtml') {
         $view .= '.phtml';
     }
 
     include("views/" . $view);
-}
-
-
-function is_ajax()
-{
-    return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 }

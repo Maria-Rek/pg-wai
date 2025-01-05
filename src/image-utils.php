@@ -14,14 +14,14 @@ function watermark_picture($picture_path, $picture_info){
     $textColor = imagecolorallocate($image, 0, 0, 0);
     $x = 20;
     $y = 30;
-    imagestring($image, $fontSize, $x, $y, $watermark, $textColor);
+    imagestring($image, $fontSize, $x, $y, $watermark, $textColor); //NAKŁADA NA OBRAZ
     if($format === 'png'){
         imagepng($image, './images/watermark/' . $picture_info['id'] . '.png');
     }
     else if($format === 'jpg'){
         imagejpeg($image, './images/watermark/' . $picture_info['id'] . '.jpg');
     }
-    imagedestroy($image);
+    imagedestroy($image); //ZWALNIA ZASOBY PAMIĘCI
 }
 
 function miniaturka($picture_path, $picture_info){
@@ -35,10 +35,10 @@ function miniaturka($picture_path, $picture_info){
     else if($format === 'jpg'){
         $image = imagecreatefromjpeg($original_path);
     }
-    $img_height = imagesy($image);
-    $img_width = imagesx($image);
+    $img_height = imagesy($image); //WYSOKOŚĆ PLIKU ORYG.
+    $img_width = imagesx($image); //SZEROKOŚĆ PLIKU ORYG.
     $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
-    imagecopyresampled($resizedImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $img_width, $img_height);
+    imagecopyresampled($resizedImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $img_width, $img_height); //SKALUJE OBRAZ
     if($format === 'png'){
         imagepng($resizedImage, './images/miniaturki/' . $picture_info['id'] . '.png');
     }

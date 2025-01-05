@@ -2,10 +2,6 @@
 require_once("business.php");
 require_once("image-utils.php");
 
-function cats(&$model){
-    return '/cats';
-}
-
 function upload(&$model){
     if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])){
         $result = handle_image_upload();
@@ -38,35 +34,33 @@ function register(&$model)
         'username' => null,
         'email' => null,
         'password' => null,
-        'error' => null  // Usunięto `repeat_password`
+        'error' => null 
     ];
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Pobieranie danych z formularza
+        //DANE
         $username = trim($_POST['username']);
         $email = trim($_POST['email']);
         $password = $_POST['password'];
 
-        // Walidacja wymaganych pól
+        //WALIDACJA
         if (empty($username) || empty($email) || empty($password)) {
             $user['error'] = 'Wszystkie pola są wymagane.';
             $model['user'] = $user;
             return 'register.phtml';
         }
 
-        // Sprawdzenie, czy użytkownik już istnieje
         if (userExists($username, $email)) {
             $user['error'] = 'Użytkownik o podanym loginie lub e-mailu już istnieje.';
             $model['user'] = $user;
             return 'register.phtml';
         }
 
-        // Hashowanie hasła
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Zapisanie użytkownika w bazie
+        //ZAPISANIE W BAZIE
         if (saveUser($username, $email, $hashedPassword)) {
-            header("Location: /index");  // Przekierowanie po sukcesie
+            header("Location: /index");
             exit();
         } else {
             $user['error'] = 'Wystąpił błąd podczas rejestracji. Spróbuj ponownie.';
@@ -74,23 +68,23 @@ function register(&$model)
     }
 
     $model['user'] = $user;
-    return 'register.phtml';  // Widok formularza rejestracji
+    return 'register.phtml';
 }
-
 
 function login(&$model) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // DANE
         $identifier = $_POST['identifier'] ?? '';
         $password = $_POST['password'] ?? '';
 
-        // Sprawdzenie poprawności danych logowania
+        //POPRAWNOŚĆ DANYCH
         if (verifyUser($identifier, $password)) {
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
             session_regenerate_id(true);
 
-            // Ustawienie danych w sesji
+            //DANE -> SESJA
             $_SESSION['username'] = $identifier;
             $_SESSION['user'] = $identifier;
             $_SESSION['success_message'] = 'Zalogowano pomyślnie!';
@@ -101,18 +95,14 @@ function login(&$model) {
             $model['error'] = "Nieprawidłowe dane logowania.";
         }
     }
-    return 'login';  // Zwrócenie widoku
+    return 'login';
 }
 
 function logout() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-
     unset($_SESSION['user']);
-    session_unset(); // Czyści dane sesji
-    session_destroy(); // Niszczy sesję
-    setcookie(session_name(), '', time() - 3600, '/'); // Usuwa ciasteczko sesji
-    header("Location: /index"); // Przekierowanie na stronę główną
+    session_unset(); //USUWA ZMIENNE SESJI
+    session_destroy(); //NA SERWERZE
+    setcookie(session_name(), '', time() - 3600, '/'); //NA URZĄDZENIU
+    header("Location: /index");
     exit();
 }

@@ -28,14 +28,13 @@ function get_picture_by_id($id)
     return $picture;
 }
 
-
 function handle_image_upload(){
-        //VALIDATION
+        //WALIDACJA
         if($_FILES['file']['size'] > 1024 * 1024){
-            return 'redirect:/upload?error=2';
+            return 'redirect:/upload?error=2'; //PLIK ZA DUŻY
         }
 
-        //FINAL UPLOAD
+        //UPLOAD
         $targetDirectory = "./images/";
         $id = uniqid();
         if($_FILES['file']['type'] === 'image/png'){
@@ -45,11 +44,11 @@ function handle_image_upload(){
             $targetFile = $targetDirectory . $id . '.jpg';
         }
         else{
-            return 'redirect:/upload?error=1';
+            return 'redirect:/upload?error=1'; //ZŁY FORMAT PLIKU
 
         }
 
-
+        //ZAPISANIE DO BAZY
         if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)){
             $db = get_db();
             $picture_info = [
@@ -62,38 +61,17 @@ function handle_image_upload(){
             try {
                 $db->pictures->insertOne($picture_info);
             } catch (Exception $e) {
-                // Handle the error here
-                return 'redirect:/upload?error=3';
+                return 'redirect:/upload?error=3'; //BŁĄD ZAPISU DO BAZY
             }
             miniaturka($targetFile, $picture_info);
             watermark_picture($targetFile, $picture_info);
             return 'redirect:/cats/galeria';
         }
         return 'redirect:/cats/galeria';
-
 }
-function connectToDatabase() {
-    try {
-        $mongo = new MongoDB\Client(
-            "mongodb://localhost:27017/wai",
-            [
-                'username' => 'wai_web',
-                'password' => 'w@i_w3b',
-            ]
-        );
-        // Test połączenia z bazą
-        $db = $mongo->selectDatabase('wai');
-        $db->listCollections();
-        return $db;
-    } catch (Exception $e) {
-        die("Błąd połączenia z MongoDB: " . $e->getMessage());
-    }
-}
-
-
 
 function userExists($username, $email) {
-    $db = connectToDatabase();
+    $db = get_db();
     $collection = $db->users;
     $user = $collection->findOne([
         '$or' => [
@@ -105,7 +83,7 @@ function userExists($username, $email) {
 }
 
 function saveUser($username, $email, $hashed_password) {
-    $db = connectToDatabase();
+    $db = get_db();
     $collection = $db->users;
     $result = $collection->insertOne([
         'username' => $username,
@@ -116,7 +94,7 @@ function saveUser($username, $email, $hashed_password) {
 }
 
 function verifyUser($identifier, $password) {
-    $db = connectToDatabase();
+    $db = get_db();
     $collection = $db->users;
     $user = $collection->findOne([
         '$or' => [
@@ -126,8 +104,8 @@ function verifyUser($identifier, $password) {
     ]);
 
     if ($user) {
-        return password_verify($password, $user['password']);  // Weryfikacja hasła
+        return password_verify($password, $user['password']);
     }
 
-    return false;  // Jeśli użytkownik nie istnieje lub hasło jest nieprawidłowe
+    return false;  //BRAK UŻYTKOWNIKA/NIEPOPRAWNE HASŁO
 }
