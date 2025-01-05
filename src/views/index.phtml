@@ -29,13 +29,13 @@
         <?php else: ?>
           <a href="/login">Zaloguj się</a>
           <a href="/register">Zarejestruj się</a>
-      <?php endif; ?>
-      <?php if (!empty($_SESSION['success_message'])): ?>
-      <div style="color: green; font-weight: bold; margin-bottom: 10px;">
-          <?= htmlspecialchars($_SESSION['success_message']) ?>
-      </div>
-      <?php unset($_SESSION['success_message']);  // Usuwamy komunikat po wyświetleniu ?>
-      <?php endif; ?>
+        <?php endif; ?>
+        <?php if (!empty($_SESSION['success_message'])): ?>
+        <div style="color: green; font-weight: bold; margin-bottom: 10px;">
+            <?= htmlspecialchars($_SESSION['success_message']) ?>
+        </div>
+        <?php unset($_SESSION['success_message']);?>
+        <?php endif; ?>
       </div>
   </body>
 </html>
