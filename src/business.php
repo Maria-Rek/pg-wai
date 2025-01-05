@@ -1,32 +1,47 @@
 <?php
 use MongoDB\BSON\ObjectID;
+use MongoDB\Client;
 
 function get_db()
 {
-    $mongo = new MongoDB\Client(
-        "mongodb://localhost:27017/wai",
-        [
-            'username' => 'wai_web',
-            'password' => 'w@i_w3b',
-        ]);
+    try {
+        $mongo = new Client(
+            "mongodb://localhost:27017/wai",
+            [
+                'username' => 'wai_web',
+                'password' => 'w@i_w3b',
+            ]
+        );
 
-    $db = $mongo->wai;
-
-    return $db;
+        $db = $mongo->wai;
+        return $db;
+    } catch (Exception $e) {
+        die("Błąd połączenia z bazą danych. Spróbuj ponownie później.");
+    }
 }
 
 function get_pictures()
 {
     $db = get_db();
-    return $db->pictures->find()->toArray();
+    try {
+        return $db->pictures->find()->toArray();
+    } catch (Exception $e) {
+        echo "Błąd odczytu z bazy danych: " . $e->getMessage();
+        return [];
+    }
 }
 
 function get_picture_by_id($id)
 {
     $db = get_db();
-    $picture = $db->pictures->findOne(['id' => $id]);
-    return $picture;
+    try {
+        return $db->pictures->findOne(['id' => $id]);
+    } catch (Exception $e) {
+        echo "Błąd pobierania zdjęcia: " . $e->getMessage();
+        return null;
+    }
 }
+
 
 function handle_image_upload(){
         //WALIDACJA
@@ -72,40 +87,51 @@ function handle_image_upload(){
 
 function userExists($username, $email) {
     $db = get_db();
-    $collection = $db->users;
-    $user = $collection->findOne([
-        '$or' => [
-            ['username' => $username],
-            ['email' => $email]
-        ]
-    ]);
-    return $user;
+    try {
+        return $db->users->findOne([
+            '$or' => [
+                ['username' => $username],
+                ['email' => $email]
+            ]
+        ]);
+    } catch (Exception $e) {
+        echo "Błąd sprawdzania użytkownika: " . $e->getMessage();
+        return null;
+    }
 }
 
 function saveUser($username, $email, $hashed_password) {
     $db = get_db();
     $collection = $db->users;
-    $result = $collection->insertOne([
-        'username' => $username,
-        'email' => $email,
-        'password' => $hashed_password
-    ]);
-    return $result->isAcknowledged();
+    try {
+        $result = $collection->insertOne([
+            'username' => $username,
+            'email' => $email,
+            'password' => $hashed_password
+        ]);
+        return $result->isAcknowledged();
+    } catch (Exception $e) {
+        echo "Błąd zapisu użytkownika: " . $e->getMessage();
+        return false;
+    }
 }
+
 
 function verifyUser($identifier, $password) {
     $db = get_db();
-    $collection = $db->users;
-    $user = $collection->findOne([
-        '$or' => [
-            ['username' => $identifier],
-            ['email' => $identifier]
-        ]
-    ]);
-
-    if ($user) {
-        return password_verify($password, $user['password']);
+    try {
+        $user = $db->users->findOne([
+            '$or' => [
+                ['username' => $identifier],
+                ['email' => $identifier]
+            ]
+        ]);
+        if ($user) {
+            return password_verify($password, $user['password']);
+        }
+        return false;
+    } catch (Exception $e) {
+        echo "Błąd logowania: " . $e->getMessage();
+        return false;
     }
-
-    return false;  //BRAK UŻYTKOWNIKA/NIEPOPRAWNE HASŁO
 }
