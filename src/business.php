@@ -52,7 +52,7 @@ function handle_image_upload() {
 
     $targetDirectory = "./images/";
     if (!is_dir($targetDirectory) || !is_writable($targetDirectory)) {
-        return 'redirect:/upload?error=5'; // ATALOG NIE ISTNIEJE LUB NIE MA UPRAWNIEŃ
+        return 'redirect:/upload?error=5'; // KATALOG NIE ISTNIEJE LUB NIE MA UPRAWNIEŃ
     }
 
     $id = uniqid();
