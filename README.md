@@ -1,3 +1,3 @@
-# pg-wai
-Web Application Development<br>
+# Wytwarzanie Aplikacji Internetowych
+Web Application Development Project<br>
 WAI - Politechnika Gdańska, Informatyka
