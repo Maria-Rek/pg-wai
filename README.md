@@ -11,4 +11,4 @@
 
 ---
 
-Project for the *Web Application Development* course at Gdańsk University of Technology.
+Project for the *Web Application Development* course (2024/2025) at Gdańsk University of Technology.
